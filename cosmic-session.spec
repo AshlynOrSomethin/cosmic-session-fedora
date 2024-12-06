@@ -10,12 +10,12 @@ ExcludeArch: %{ix86}
 # While our version corresponds to an upstream tag, we still need to define
 # these macros in order to set the VERGEN_GIT_SHA and VERGEN_GIT_COMMIT_DATE
 # environment variables in multiple sections of the spec file.
-%global commit 5a0df6afb6c9c5e9c29e33a756bf7e600c3d0264
-%global commitdatestring 2024-10-31 10:51:10 -0700
-%global cosmic_minver 1.0.0~alpha.3
+%global commit 87a0644435145b009ea4c159d3992ff279292424
+%global commitdatestring 2024-12-04 16:51:50 +0100
+%global cosmic_minver 1.0.0~alpha.4
 
 Name:           cosmic-session
-Version:        1.0.0~alpha.3
+Version:        1.0.0~alpha.4
 Release:        %autorelease
 Summary:        Session manager for the COSMIC desktop environment
 
@@ -31,6 +31,12 @@ Source0:        https://github.com/pop-os/cosmic-session/archive/epoch-%{version
 Source1:        vendor-%{version_no_tilde}.tar.gz
 # * mv vendor-config-%%{version_no_tilde}.toml ..
 Source2:        vendor-config-%{version_no_tilde}.toml
+# COSMIC's dconf profile
+Source3:        cosmic-dconf-profile.txt
+
+# Fixes cursor themes in COSMIC
+# See: https://github.com/pop-os/cosmic-session/pull/87
+Patch0: https://patch-diff.githubusercontent.com/raw/pop-os/cosmic-session/pull/87.patch
 
 BuildRequires:  cargo-rpm-macros >= 26
 BuildRequires:  rustc
@@ -63,9 +69,6 @@ Requires:       mozilla-fira-mono-fonts
 Requires:       mozilla-fira-sans-fonts
 Requires:       xorg-x11-server-Xwayland
 Recommends:     cosmic-wallpapers >= %{cosmic_minver}
-
-# Require the distribution extra desktop configuration
-Requires:       system-cosmic-config
 
 %global _description %{expand:
 The session manager for the COSMIC desktop environment.}
@@ -101,6 +104,7 @@ sed 's/\(.*\) (.*#\(.*\))/\1+git\2/' -i cargo-vendor.txt
 export VERGEN_GIT_COMMIT_DATE="date --utc '%{commitdatestring}'"
 export VERGEN_GIT_SHA="%{commit}"
 just rootdir=%{buildroot} install
+install -Dm0644 %{SOURCE3} %{buildroot}/%{_sysconfdir}/dconf/profile/cosmic
 
 %if %{with check}
 %check
@@ -119,6 +123,7 @@ export VERGEN_GIT_SHA="%{commit}"
 %{_userunitdir}/cosmic-session.target
 %{_datadir}/wayland-sessions/cosmic.desktop
 %{_datadir}/applications/cosmic-mimeapps.list
+%{_sysconfdir}/dconf/profile/cosmic
 
 %changelog
 %autochangelog

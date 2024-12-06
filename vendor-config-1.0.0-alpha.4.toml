@@ -5,6 +5,10 @@ replace-with = "vendored-sources"
 git = "https://github.com/pop-os/cosmic-notifications"
 replace-with = "vendored-sources"
 
+[source."git+https://github.com/pop-os/dbus-settings-bindings"]
+git = "https://github.com/pop-os/dbus-settings-bindings"
+replace-with = "vendored-sources"
+
 [source."git+https://github.com/pop-os/launch-pad"]
 git = "https://github.com/pop-os/launch-pad"
 replace-with = "vendored-sources"
