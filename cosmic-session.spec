@@ -64,7 +64,7 @@ Requires:       cosmic-term >= %{cosmic_minver}
 Requires:       cosmic-workspaces >= %{cosmic_minver}
 Requires:       xdg-desktop-portal-cosmic >= %{cosmic_minver}
 Requires:       open-sans-fonts
-Requires:       google-noto-sans-mono-fonts
+Requires:       font(notosansmono)
 Requires:       xdg-user-dirs
 Recommends:     cosmic-wallpapers >= %{cosmic_minver}
 
