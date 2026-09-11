@@ -70,6 +70,7 @@ Requires:       font(notosansmono)
 Requires:       xdg-user-dirs
 Recommends:     cosmic-wallpapers >= %{cosmic_minver}
 Suggests:       cosmic-term >= %{cosmic_minver}
+Suggests:       cosmic-player >= %{cosmic_minver}
 
 # Include the distribution extra desktop configuration
 #   this ensures users have a fedora-like experience.
