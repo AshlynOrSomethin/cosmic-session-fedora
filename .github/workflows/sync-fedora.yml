@@ -1,0 +1,61 @@
+name: Sync with Fedora f44
+
+# Watches Fedora dist-git's f44 branch for cosmic-session and merges any
+# upstream updates on top of our patch, then pushes. The push triggers the
+# Copr webhook build, which computes Release via rpmautospec (%autorelease),
+# so our build's release is always the upstream release + our own commits.
+
+on:
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: f44
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Fetch Fedora dist-git f44
+        run: git fetch https://src.fedoraproject.org/rpms/cosmic-session.git f44:refs/remotes/fedora/f44
+
+      - name: Merge upstream changes
+        id: merge
+        run: |
+          if git merge-base --is-ancestor fedora/f44 HEAD; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if git merge --no-edit fedora/f44; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            git merge --abort
+            echo "conflict=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Push merged branch
+        if: steps.merge.outputs.changed == 'true'
+        run: git push origin f44
+
+      - name: File issue on conflict
+        if: steps.merge.outputs.conflict == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create \
+            --title "Merge conflict syncing with Fedora f44" \
+            --body "Automatic merge of Fedora dist-git f44 into this branch failed due to a conflict. Please merge manually: https://src.fedoraproject.org/rpms/cosmic-session/tree/f44"
