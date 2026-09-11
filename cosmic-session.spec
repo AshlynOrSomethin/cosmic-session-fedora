@@ -16,7 +16,9 @@ ExcludeArch: %{ix86}
 
 Name:           cosmic-session
 Version: 1.8.0
-Release:        %autorelease
+# Fedora's release for this version, plus our own ".1" suffix so this
+# package always wins over Fedora's official build of the same version.
+Release:        1.1%{?dist}
 Summary:        Session manager for the COSMIC desktop environment
 
 License: (0BSD OR Apache-2.0 OR MIT) AND (Apache-2.0 OR Apache-2.0 WITH LLVM-exception OR MIT) AND (Apache-2.0 OR BSD-2-Clause OR MIT) AND (Apache-2.0 OR LGPL-2.1-or-later OR MIT) AND (Apache-2.0 OR MIT OR Zlib) AND (Apache-2.0 OR MIT) AND (MIT OR Unlicense) AND Apache-2.0 AND GPL-3.0-only AND MIT AND MPL-2.0 AND Unicode-3.0 AND Zlib
@@ -130,4 +132,5 @@ export VERGEN_GIT_SHA="%{commit}"
 %{_datadir}/dconf/profile/cosmic
 
 %changelog
-%autochangelog
+* Thu Sep 10 2026 AshlynOrSomethin <31773733+AshlynOrSomethin@users.noreply.github.com> - 1.8.0-1.1
+- Make cosmic-term a Suggests instead of a Requires
