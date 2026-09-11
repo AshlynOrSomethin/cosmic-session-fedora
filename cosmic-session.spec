@@ -60,13 +60,14 @@ Requires:       cosmic-randr >= %{cosmic_minver}
 Requires:       cosmic-screenshot >= %{cosmic_minver}
 Requires:       cosmic-settings >= %{cosmic_minver}
 Requires:       cosmic-settings-daemon >= %{cosmic_minver}
-Requires:       cosmic-term >= %{cosmic_minver}
+#Requires:       cosmic-term >= %{cosmic_minver}
 Requires:       cosmic-workspaces >= %{cosmic_minver}
 Requires:       xdg-desktop-portal-cosmic >= %{cosmic_minver}
 Requires:       open-sans-fonts
 Requires:       font(notosansmono)
 Requires:       xdg-user-dirs
 Recommends:     cosmic-wallpapers >= %{cosmic_minver}
+Suggests:       cosmic-term >= %{cosmic_minver}
 
 # Include the distribution extra desktop configuration
 #   this ensures users have a fedora-like experience.
