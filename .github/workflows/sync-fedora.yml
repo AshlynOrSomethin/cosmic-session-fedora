@@ -1,9 +1,9 @@
 name: Sync with Fedora f44
 
 # Watches Fedora dist-git's f44 branch for cosmic-session and merges any
-# upstream updates on top of our patch, then pushes. The push triggers the
-# Copr webhook build, which computes Release via rpmautospec (%autorelease),
-# so our build's release is always the upstream release + our own commits.
+# upstream updates on top of our patch. Release is recomputed from Koji as
+# "<fedora-release>.1" so this build's NVR always outranks Fedora's official
+# one for the same Version. Pushing triggers the Copr webhook build.
 
 on:
   schedule:
@@ -45,6 +45,14 @@ jobs:
           else
             git merge --abort
             echo "conflict=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Recompute Release from Koji
+        if: steps.merge.outputs.changed == 'true'
+        run: |
+          python3 .github/scripts/update-release.py
+          if ! git diff --cached --quiet; then
+            git commit -m "Bump Release to match Fedora f44"
           fi
 
       - name: Push merged branch
